@@ -48,7 +48,7 @@ function App() {
       {/* 章節選擇與模式控制 */}
       <div className="w-full max-w-4xl mb-6 space-y-4">
         <div className="flex justify-center gap-4">
-          {['ch1', 'ch2', ].map(ch => (
+          {['ch1', 'ch2', 'ch3', 'ch4', ].map(ch => (
             <button
               key={ch}
               onClick={() => setCurrentChapter(ch)}
