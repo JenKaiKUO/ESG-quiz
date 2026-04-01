@@ -1,0 +1,57 @@
+/* 讓內容在手機上不會被網址列遮住，並保持彈性 */
+:root {
+  --app-height: 100%;
+}
+
+html, body {
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  height: 100%;
+  /* 防止手機版左右晃動 */
+  overflow-x: hidden; 
+  background-color: #f8fafc; /* slate-50 */
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+}
+
+#root {
+  width: 100%;
+  min-height: 100vh;
+}
+
+/* 針對按鈕點擊後的藍框（Focus）優化，讓它在手機上不礙眼 */
+button:focus {
+  outline: none;
+}
+
+/* 優化捲動條樣式（讓介面更像專業 App） */
+::-webkit-scrollbar {
+  width: 6px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: #cbd5e1;
+  border-radius: 10px;
+}
+
+/* 題目卡片出現時的微小動畫 */
+.animate-in {
+  animation: fadeIn 0.4s ease-out;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* 針對超級小螢幕的微調 (例如 iPhone SE) */
+@media (max-width: 380px) {
+  .text-2xl {
+    font-size: 1.25rem; /* 讓題目字體再縮小一點點，避免擠爆 */
+  }
+  .p-5 {
+    padding: 1rem;
+  }
+}
