@@ -3,12 +3,10 @@ import React, { useState, useEffect } from 'react';
 const QuestionCard = ({ data }) => {
   const [selected, setSelected] = useState(null);
 
-  // 當題目 id 改變時，重置選擇狀態
   useEffect(() => {
     setSelected(null);
   }, [data.id]);
 
-  // 自動拆解選項邏輯
   const parseContent = (text) => {
     const parts = text.split(/\(\d\)/);
     const questionText = parts[0].trim();
@@ -19,62 +17,53 @@ const QuestionCard = ({ data }) => {
   const { questionText, options } = parseContent(data.content);
 
   const handleSelect = (index) => {
-    if (selected !== null) return; // 防止重複點擊
+    if (selected !== null) return;
     setSelected(index + 1);
   };
 
   return (
-    <div className="w-full bg-white rounded-lg shadow-md border border-gray-200 p-8">
-      {/* 題目文本：占比放大 */}
-      <div className="text-2xl font-bold text-gray-800 mb-8 leading-relaxed">
-        Q{data.id}: {questionText}
+    /* h-full 讓卡片填滿 App.jsx 分配給它的空間，flex-col 進行內部排版 */
+    <div className="w-full h-full bg-white rounded-2xl shadow-sm border border-slate-200 p-4 sm:p-6 flex flex-col overflow-hidden animate-in">
+      
+      {/* 題目：固定高度，不縮放 (shrink-0) */}
+      <div className="text-lg sm:text-xl font-bold text-slate-800 mb-3 shrink-0 leading-snug">
+        <span className="text-blue-600 mr-2">Q{data.id}</span>
+        {questionText}
       </div>
 
-      {/* 選項列表：垂直排列且占比大 */}
-      <div className="flex flex-col gap-4">
+      {/* 選項區塊：填滿剩餘高度 (grow)，若選項過多則內部滾動 (overflow-y-auto) */}
+      <div className="flex flex-col gap-2 overflow-y-auto pr-2 grow min-h-0 custom-scrollbar">
         {options.map((opt, index) => {
           const optNum = index + 1;
           const isCorrect = optNum === parseInt(data.answer);
           const isSelected = optNum === selected;
 
-          // 判斷背景顏色邏輯
-          let btnStyle = "w-full p-5 text-xl text-left border-2 rounded-xl transition-all ";
+          let btnStyle = "w-full p-3 sm:p-4 text-base sm:text-lg text-left border-2 rounded-xl transition-all duration-200 shrink-0 ";
           
           if (selected === null) {
-            // 尚未選擇
-            btnStyle += "border-gray-200 hover:border-blue-500 hover:bg-blue-50";
+            btnStyle += "border-slate-100 hover:border-blue-400 hover:bg-blue-50 text-slate-700 shadow-sm";
           } else {
-            // 已經選擇
-            if (isCorrect) {
-              // 正確答案：永遠顯示綠色
-              btnStyle += "border-green-500 bg-green-100 text-green-700 font-bold";
-            } else if (isSelected && !isCorrect) {
-              // 選錯了：顯示紅色
-              btnStyle += "border-red-500 bg-red-100 text-red-700 font-bold";
-            } else {
-              // 其他沒選中的錯誤選項
-              btnStyle += "border-gray-100 text-gray-400 opacity-60";
-            }
+            if (isCorrect) btnStyle += "border-green-500 bg-green-50 text-green-700 font-bold";
+            else if (isSelected && !isCorrect) btnStyle += "border-red-500 bg-red-50 text-red-700 font-bold";
+            else btnStyle += "border-slate-50 text-slate-300 opacity-50";
           }
 
           return (
-            <button
-              key={index}
-              onClick={() => handleSelect(index)}
-              className={btnStyle}
-            >
-              ({optNum}) {opt}
+            <button key={index} onClick={() => handleSelect(index)} className={btnStyle}>
+              <span className="inline-block w-8 font-mono">({optNum})</span> {opt}
             </button>
           );
         })}
       </div>
 
-      {/* 解析區塊：選完後顯示 */}
+      {/* 解析區塊：限制最大高度 (max-h)，超過則內部滾動，不會推擠下方佈局 */}
       {selected !== null && (
-        <div className="mt-8 p-6 bg-gray-50 rounded-lg border-l-4 border-blue-500">
-          <div className="text-blue-700 font-bold mb-2 text-lg">答案：({data.answer})</div>
-          <div className="text-gray-600 text-lg leading-relaxed">
-            <span className="font-bold text-gray-800">解析：</span>
+        <div className="mt-3 p-3 sm:p-4 bg-slate-50 rounded-xl border-l-4 border-blue-500 shrink-0 max-h-32 sm:max-h-40 overflow-y-auto custom-scrollbar">
+          <div className="text-blue-700 font-black mb-1 text-sm sm:text-base">
+            答案：({data.answer})
+          </div>
+          <div className="text-slate-600 text-sm sm:text-base leading-relaxed">
+            <span className="font-bold text-slate-800">解析：</span>
             {data.analysis.replace(/[\[\]]/g, '').trim()}
           </div>
         </div>
